@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CertiAuto RD — Registro Nacional de Historial Vehicular</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300&family=Source+Code+Pro:wght@400;500&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0D1B2A;--ink-mid:#1C2B3A;--ink-light:#2E3F52;
+  --rule:#C8C0B0;--rule-light:#E2DBD0;
+  --parch:#F7F4EE;--parch-mid:#EDE8DF;--parch-dark:#E0D9CE;
+  --gold:#8B6914;--gold-light:#B8922A;--gold-pale:#F5EDD8;
+  --crimson:#8B1A1A;--crimson-pale:#F8EDED;
+  --forest:#1A5C3A;--forest-pale:#EBF4EE;
+  --amber-txt:#6B4A0E;--amber-pale:#FBF3E3;
+  --text-body:#1C2B3A;--text-sub:#4A5568;--text-ghost:#8A8078;
+  --serif:'Source Serif 4',Georgia,serif;
+  --sans:'Source Sans 3',sans-serif;
+  --mono:'Source Code Pro',monospace;
+  --shadow:0 1px 3px rgba(13,27,42,.08),0 4px 16px rgba(13,27,42,.06);
+}
+html{font-size:15px;scroll-behavior:smooth}
+body{background:var(--parch);color:var(--text-body);font-family:var(--sans);font-weight:400;line-height:1.65;min-height:100vh}
+
+/* GOV STRIP */
+.gov-strip{background:var(--ink);border-bottom:3px solid var(--gold);padding:0 24px}
+.gov-strip-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:44px}
+.gov-left{display:flex;align-items:center;gap:14px}
+.escudo{width:26px;height:26px;flex-shrink:0}
+.gov-name{font-family:var(--sans);font-size:11px;font-weight:600;color:rgba(255,255,255,.85);letter-spacing:.06em;text-transform:uppercase}
+.gov-divider{width:1px;height:20px;background:rgba(255,255,255,.2)}
+.gov-dept{font-size:11px;color:rgba(255,255,255,.45);letter-spacing:.03em}
+.gov-right{display:flex;gap:20px;align-items:center}
+.gov-link{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;text-decoration:none}
+.gov-link:hover{color:rgba(255,255,255,.75)}
+
+/* BRAND */
+.brand-header{background:var(--ink-mid);border-bottom:1px solid var(--ink-light);padding:0 24px}
+.brand-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:18px 0;flex-wrap:wrap;gap:12px}
+.brand-title{font-family:var(--serif);font-size:22px;font-weight:600;color:#fff;letter-spacing:.01em;line-height:1.1}
+.brand-title span{color:var(--gold-light)}
+.brand-subtitle{font-size:11px;color:rgba(255,255,255,.35);letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
+.brand-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.meta-pill{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.07em;text-transform:uppercase;padding:4px 12px;border:1px solid rgba(255,255,255,.1)}
+.meta-pill strong{color:var(--gold-light);font-weight:600}
+
+/* NAV */
+.nav-bar{background:#fff;border-bottom:2px solid var(--rule);padding:0 24px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(13,27,42,.08)}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.nav-tabs{display:flex;align-items:center}
+.nav-tab{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-sub);padding:16px 18px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;white-space:nowrap}
+.nav-tab:hover{color:var(--ink)}
+.nav-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.nav-actions{display:flex;gap:8px;padding:10px 0}
+.btn{font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:8px 18px;border:1.5px solid;cursor:pointer;transition:all .15s;background:transparent;white-space:nowrap}
+.btn-primary{border-color:var(--ink);color:var(--ink)}
+.btn-primary:hover{background:var(--ink);color:#fff}
+.btn-gold{border-color:var(--gold);color:var(--gold)}
+.btn-gold:hover{background:var(--gold);color:#fff}
+
+/* HAMBURGER */
+.ham-btn{display:none;background:none;border:none;cursor:pointer;padding:10px 0;flex-direction:column;gap:5px}
+.ham-line{width:22px;height:1.5px;background:var(--ink)}
+.mobile-menu{display:none;background:#fff;border-bottom:1px solid var(--rule-light)}
+.mobile-menu.open{display:block}
+.mobile-nav-item{display:block;padding:11px 24px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-sub);cursor:pointer;border-bottom:1px solid var(--rule-light)}
+.mobile-nav-item:last-child{border-bottom:none}
+.mobile-nav-item.active{color:var(--gold)}
+
+/* LAYOUT */
+.page-wrap{max-width:1200px;margin:0 auto;padding:28px 24px 60px}
+
+/* SEARCH */
+.search-section{background:#fff;border:1px solid var(--rule);border-top:3px solid var(--ink);padding:28px 32px;margin-bottom:24px;box-shadow:var(--shadow)}
+.section-eyebrow{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-ghost);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.section-eyebrow::before{content:'';display:inline-block;width:16px;height:1.5px;background:var(--gold)}
+.search-form{display:flex}
+.search-input{flex:1;border:1.5px solid var(--rule);border-right:none;background:var(--parch);color:var(--ink);font-family:var(--mono);font-size:16px;font-weight:500;letter-spacing:.12em;padding:14px 20px;outline:none;text-transform:uppercase;transition:border-color .15s;min-width:0}
+.search-input::placeholder{color:var(--rule);font-size:12px;letter-spacing:.07em}
+.search-input:focus{border-color:var(--ink);background:#fff}
+.search-btn{background:var(--ink);border:1.5px solid var(--ink);color:#fff;font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.12em;padding:14px 28px;cursor:pointer;text-transform:uppercase;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.search-btn:hover{background:var(--ink-mid)}
+.search-footer{display:flex;margin-top:12px;border:1px solid var(--rule-light);background:var(--parch-mid)}
+.search-footer-item{padding:8px 16px;font-size:10px;color:var(--text-ghost);letter-spacing:.05em;border-right:1px solid var(--rule-light);flex:1}
+.search-footer-item:last-child{border-right:none}
+.search-footer-item strong{color:var(--gold);font-weight:700}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat-card{background:#fff;border:1px solid var(--rule);border-top:3px solid var(--rule);padding:18px 20px;box-shadow:var(--shadow)}
+.stat-card.ag{border-top-color:var(--gold)}.stat-card.af{border-top-color:var(--forest)}.stat-card.ac{border-top-color:var(--crimson)}.stat-card.ai{border-top-color:var(--ink)}
+.stat-eyebrow{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-ghost);margin-bottom:8px}
+.stat-val{font-family:var(--serif);font-size:30px;font-weight:600;color:var(--ink);line-height:1}
+.stat-val.ok{color:var(--forest)}.stat-val.warn{color:var(--gold)}.stat-val.alert{color:var(--crimson)}
+.stat-sub{font-size:11px;color:var(--text-ghost);margin-top:5px}
+
+/* DOCUMENT */
+.document{background:#fff;border:1px solid var(--rule);box-shadow:var(--shadow);margin-bottom:2px}
+.doc-header-top{background:var(--ink);padding:22px 32px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:20px}
+.doc-id-label{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:4px}
+.doc-id-val{font-family:var(--mono);font-size:12px;color:var(--gold-light);letter-spacing:.08em}
+.doc-vehicle-name{font-family:var(--serif);font-size:26px;font-weight:600;color:#fff;line-height:1.1}
+.doc-vin{font-family:var(--mono);font-size:13px;color:rgba(255,255,255,.45);letter-spacing:.14em;margin-top:6px}
+.doc-badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.badge{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border:1px solid}
+.badge-ok{border-color:rgba(46,160,90,.5);color:#5DC886}.badge-warn{border-color:rgba(184,146,42,.5);color:var(--gold-light)}.badge-alert{border-color:rgba(200,80,80,.5);color:#E07070}
+.doc-score-block{text-align:center;flex-shrink:0}
+.doc-score-label{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:6px}
+.doc-score-number{font-family:var(--serif);font-size:52px;font-weight:600;color:#5DC886;line-height:1}
+.doc-score-denom{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.28);margin-top:4px;letter-spacing:.08em}
+.score-track{width:100%;height:3px;background:rgba(255,255,255,.1);margin-top:10px}
+.score-fill{height:100%;background:#5DC886;width:85%}
+.doc-score-verdict{font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#5DC886;margin-top:6px}
+.doc-header-meta{background:var(--parch-mid);border-bottom:1px solid var(--rule-light);padding:10px 32px;display:flex;flex-wrap:wrap;gap:0}
+.meta-cell{padding:6px 24px 6px 0;margin-right:24px;border-right:1px solid var(--rule-light);font-size:11px;color:var(--text-sub);flex-shrink:0}
+.meta-cell:last-child{border-right:none;margin-right:0}
+.meta-cell strong{color:var(--ink);font-weight:600;display:block;font-size:13px}
+
+/* MODULE TABS */
+.module-tabs{background:#fff;border-bottom:2px solid var(--rule-light);padding:0 32px;display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.module-tab{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-ghost);padding:14px 18px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;white-space:nowrap}
+.module-tab:hover{color:var(--text-sub)}
+.module-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+/* MODULE */
+.module{border-top:1px solid var(--rule-light)}
+.module-header{padding:15px 32px;background:var(--parch);border-bottom:1px solid var(--rule-light);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.module-title{font-family:var(--serif);font-size:13px;font-weight:600;color:var(--ink)}
+.module-subtitle{font-size:10px;color:var(--text-ghost);letter-spacing:.05em}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table thead tr{background:var(--parch-mid);border-bottom:1.5px solid var(--rule)}
+.data-table th{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-ghost);padding:11px 20px;text-align:left;white-space:nowrap}
+.data-table td{padding:14px 20px;border-bottom:1px solid var(--rule-light);color:var(--text-body);vertical-align:middle}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tbody tr:hover{background:var(--parch)}
+.td-mono{font-family:var(--mono);font-size:12px;color:var(--text-sub)}
+
+/* STATUS */
+.status{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:600;letter-spacing:.04em}
+.status-pip{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.st-ok{color:var(--forest)}.st-ok .status-pip{background:var(--forest)}
+.st-warn{color:#8B6000}.st-warn .status-pip{background:#C89A00}
+.st-crit{color:var(--crimson)}.st-crit .status-pip{background:var(--crimson)}
+
+/* INCIDENT */
+.incident-wrap{padding:24px 32px}
+.incident-card{border:1px solid var(--rule);border-left:4px solid #C89A00}
+.incident-top{background:var(--amber-pale);border-bottom:1px solid var(--rule-light);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.incident-tag{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--amber-txt)}
+.incident-num{font-family:var(--mono);font-size:10px;color:var(--text-ghost)}
+.incident-body{padding:20px}
+.fields-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 24px;margin-bottom:20px}
+.field label{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-ghost);display:block;margin-bottom:4px}
+.field .fval{font-size:13px;color:var(--ink)}
+.field .fval.mono{font-family:var(--mono);font-size:12px}
+
+/* PHOTOS */
+.photo-section{border-top:1px solid var(--rule-light);padding-top:18px;margin-top:4px}
+.photo-eyebrow{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-ghost);margin-bottom:12px}
+.photo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.photo-item{border:1px solid var(--rule);background:var(--parch-mid);aspect-ratio:4/3;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:border-color .15s;padding:10px}
+.photo-item:hover{border-color:var(--gold)}
+.photo-icon{width:32px;height:32px;border:1.5px solid var(--rule);display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+.photo-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-ghost);text-align:center;line-height:1.4}
+.photo-auth{font-size:10px;color:var(--text-ghost);margin-top:10px;font-style:italic}
+
+/* ANTIFRAUDE */
+.alert-list{list-style:none}
+.alert-item{display:flex;align-items:stretch;border-bottom:1px solid var(--rule-light)}
+.alert-item:last-child{border-bottom:none}
+.alert-status-col{width:56px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 0;border-right:1px solid var(--rule-light);gap:6px}
+.alert-icon{width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:var(--mono)}
+.ai-ok{background:var(--forest-pale);color:var(--forest);border:1px solid rgba(26,92,58,.2)}
+.ai-warn{background:var(--amber-pale);color:var(--amber-txt);border:1px solid rgba(200,168,75,.3)}
+.ai-crit{background:var(--crimson-pale);color:var(--crimson);border:1px solid rgba(139,26,26,.2)}
+.alert-content-col{flex:1;padding:16px 24px;min-width:0}
+.alert-title{font-size:12px;font-weight:700;letter-spacing:.03em;margin-bottom:3px}
+.at-ok{color:var(--forest)}.at-warn{color:var(--amber-txt)}.at-crit{color:var(--crimson)}
+.alert-desc{font-size:12px;color:var(--text-sub);line-height:1.55}
+.alert-source-col{width:160px;flex-shrink:0;padding:16px 18px;border-left:1px solid var(--rule-light);display:flex;align-items:center}
+.alert-source-txt{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-ghost);line-height:1.7}
+
+/* HEALTH */
+.health-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--rule-light);margin:24px 32px}
+.health-cell{padding:16px 20px;border-right:1px solid var(--rule-light);border-bottom:1px solid var(--rule-light);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.health-cell:nth-child(3n){border-right:none}
+.health-cell:nth-child(n+4){border-bottom:none}
+.health-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-ghost)}
+
+/* MARKET */
+.market-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--rule-light);margin:24px 32px}
+.market-cell{padding:20px;border-right:1px solid var(--rule-light);border-bottom:1px solid var(--rule-light)}
+.market-cell:nth-child(3n){border-right:none}
+.market-cell:nth-child(n+4){border-bottom:none}
+.market-lbl{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-ghost);margin-bottom:8px}
+.market-val{font-family:var(--serif);font-size:20px;font-weight:600;color:var(--ink)}
+.market-val.positive{color:var(--forest)}.market-val.caution{color:var(--amber-txt)}
+.market-sub{font-size:11px;color:var(--text-ghost);margin-top:4px}
+
+/* UPLOAD */
+.upload-wrap{padding:24px 32px}
+.upload-zone{border:1.5px dashed var(--rule);background:var(--parch);padding:36px 32px;text-align:center;cursor:pointer;transition:all .15s;margin-bottom:20px}
+.upload-zone:hover{border-color:var(--gold);background:var(--gold-pale)}
+.upload-title{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.upload-sub{font-size:12px;color:var(--text-ghost)}
+.format-row{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.format-tag{background:#fff;border:1px solid var(--rule);font-size:9px;font-weight:700;letter-spacing:.12em;color:var(--text-ghost);padding:5px 12px;text-transform:uppercase}
+.code-sample{background:var(--ink);padding:16px 20px;font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.55);line-height:2;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.code-sample .hl{color:var(--gold-light)}
+.code-note{font-size:10px;color:var(--text-ghost);margin-top:8px;letter-spacing:.04em}
+
+/* SUBSCRIPTION */
+.sub-grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--rule-light);margin:24px 32px}
+.sub-cell{padding:24px;border-right:1px solid var(--rule-light)}
+.sub-cell:last-child{border-right:none}
+.sub-plan-name{font-family:var(--serif);font-size:18px;font-weight:600;color:var(--gold);margin-bottom:4px}
+.sub-price{font-size:12px;color:var(--text-sub);margin-bottom:20px}
+.usage-track{height:4px;background:var(--rule-light);margin-bottom:8px}
+.usage-fill{height:100%;background:var(--gold);width:60%}
+.usage-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text-ghost);font-weight:600;letter-spacing:.06em}
+.usage-labels strong{color:var(--gold)}
+.benefit-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.benefit-item{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text-sub)}
+.benefit-check{width:16px;height:16px;background:var(--forest-pale);border:1px solid rgba(26,92,58,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;color:var(--forest);font-weight:700}
+
+/* SEAL */
+.doc-seal{background:var(--parch-mid);border-top:2px solid var(--rule);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.seal-left{font-size:11px;color:var(--text-sub);line-height:1.8}
+.seal-left strong{color:var(--ink);font-weight:600}
+.seal-right{font-family:var(--mono);font-size:9px;color:var(--text-ghost);text-align:right;line-height:1.9;letter-spacing:.05em}
+.seal-right strong{color:var(--gold)}
+
+/* ---- RESPONSIVE ---- */
+@media(max-width:900px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .fields-grid{grid-template-columns:repeat(2,1fr)}
+  .photo-grid{grid-template-columns:repeat(2,1fr)}
+  .health-grid{grid-template-columns:repeat(2,1fr);margin:16px}
+  .health-cell:nth-child(3n){border-right:1px solid var(--rule-light)}
+  .health-cell:nth-child(2n){border-right:none}
+  .health-cell:nth-child(n+4){border-bottom:1px solid var(--rule-light)}
+  .health-cell:nth-child(n+5){border-bottom:none}
+  .health-cell:last-child{border-bottom:none}
+  .market-grid{grid-template-columns:repeat(2,1fr);margin:16px}
+  .market-cell:nth-child(3n){border-right:1px solid var(--rule-light)}
+  .market-cell:nth-child(2n){border-right:none}
+  .market-cell:nth-child(n+4){border-bottom:1px solid var(--rule-light)}
+  .market-cell:nth-child(n+5){border-bottom:none}
+  .market-cell:last-child{border-bottom:none}
+  .alert-source-col{display:none}
+  .gov-right{display:none}
+  .nav-tabs{display:none}
+  .ham-btn{display:flex}
+  .nav-actions{display:none}
+}
+@media(max-width:600px){
+  .gov-dept,.gov-divider{display:none}
+  .gov-name{font-size:10px}
+  .brand-inner{padding:14px 0}
+  .brand-title{font-size:17px}
+  .brand-meta{display:none}
+  .page-wrap{padding:16px 14px 40px}
+  .search-section{padding:18px 16px}
+  .search-form{flex-direction:column}
+  .search-input{border-right:1.5px solid var(--rule);border-bottom:none;font-size:14px}
+  .search-btn{width:100%;padding:13px 20px;border-top:none}
+  .search-footer{flex-direction:column}
+  .search-footer-item{border-right:none;border-bottom:1px solid var(--rule-light)}
+  .search-footer-item:last-child{border-bottom:none}
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+  .doc-header-top{padding:18px 16px;flex-direction:column}
+  .doc-score-block{text-align:left}
+  .doc-header-meta{padding:10px 16px;flex-direction:column}
+  .meta-cell{border-right:none;margin-right:0;padding:4px 0}
+  .module-tabs{padding:0 12px}
+  .module-tab{padding:12px 12px}
+  .module-header{padding:12px 16px}
+  .data-table th,.data-table td{padding:10px 12px}
+  .incident-wrap{padding:14px}
+  .fields-grid{grid-template-columns:1fr}
+  .photo-grid{grid-template-columns:repeat(2,1fr)}
+  .health-grid{grid-template-columns:1fr;margin:12px 14px}
+  .health-cell,.health-cell:nth-child(3n),.health-cell:nth-child(2n){border-right:none;border-bottom:1px solid var(--rule-light)}
+  .health-cell:last-child{border-bottom:none !important}
+  .market-grid{grid-template-columns:1fr;margin:12px 14px}
+  .market-cell,.market-cell:nth-child(3n),.market-cell:nth-child(2n){border-right:none;border-bottom:1px solid var(--rule-light)}
+  .market-cell:last-child{border-bottom:none !important}
+  .upload-wrap{padding:14px}
+  .upload-zone{padding:24px 16px}
+  .sub-grid{grid-template-columns:1fr;margin:12px 14px}
+  .sub-cell{border-right:none;border-bottom:1px solid var(--rule-light)}
+  .sub-cell:last-child{border-bottom:none}
+  .doc-seal{padding:14px 16px;flex-direction:column;align-items:flex-start}
+  .seal-right{text-align:left}
+  .alert-item{flex-direction:column}
+  .alert-status-col{width:100%;border-right:none;border-bottom:1px solid var(--rule-light);padding:10px 16px;flex-direction:row;height:auto}
+  .alert-content-col{padding:12px 16px}
+  .sub-grid{margin:12px 14px}
+}
+</style>
+</head>
+<body>
+
+<!-- GOVERNMENT STRIP -->
+<div class="gov-strip">
+  <div class="gov-strip-inner">
+    <div class="gov-left">
+      <svg class="escudo" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="1" y="1" width="24" height="24" rx="1" fill="none" stroke="rgba(184,146,42,0.5)" stroke-width="1"/>
+        <text x="13" y="17" font-family="Georgia,serif" font-size="12" font-weight="bold" fill="#B8922A" text-anchor="middle">RD</text>
+      </svg>
+      <span class="gov-name">Republica Dominicana</span>
+      <span class="gov-divider"></span>
+      <span class="gov-dept">Ministerio de Industria, Comercio y Mipymes</span>
+    </div>
+    <div class="gov-right">
+      <a class="gov-link">Accesibilidad</a>
+      <a class="gov-link">Espanol</a>
+      <a class="gov-link">gobierno.gob.do</a>
+    </div>
+  </div>
+</div>
+
+<!-- BRAND HEADER -->
+<div class="brand-header">
+  <div class="brand-inner">
+    <div>
+      <div class="brand-title"><span>CertiAuto</span> RD</div>
+      <div class="brand-subtitle">Registro Nacional de Historial Vehicular — Sistema Oficial</div>
+    </div>
+    <div class="brand-meta">
+      <div class="meta-pill">Plan: <strong>Pro Dealer</strong></div>
+      <div class="meta-pill">Reportes: <strong>6 / 10</strong></div>
+      <div class="meta-pill">Usuario: <strong>D. Ramirez</strong></div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV BAR -->
+<div class="nav-bar">
+  <div class="nav-inner">
+    <div class="nav-tabs">
+      <div class="nav-tab active">Consulta VIN</div>
+      <div class="nav-tab">Mis Reportes</div>
+      <div class="nav-tab">Carga de Datos</div>
+      <div class="nav-tab">Talleres</div>
+      <div class="nav-tab">Aseguradoras</div>
+      <div class="nav-tab">Suscripcion</div>
+    </div>
+    <button class="ham-btn" id="hamBtn" aria-label="Menu">
+      <span class="ham-line"></span><span class="ham-line"></span><span class="ham-line"></span>
+    </button>
+    <div class="nav-actions">
+      <button class="btn btn-primary">Descargar PDF</button>
+      <button class="btn btn-gold">Nueva Consulta</button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-nav-item active">Consulta VIN</div>
+    <div class="mobile-nav-item">Mis Reportes</div>
+    <div class="mobile-nav-item">Carga de Datos</div>
+    <div class="mobile-nav-item">Talleres</div>
+    <div class="mobile-nav-item">Aseguradoras</div>
+    <div class="mobile-nav-item">Suscripcion</div>
+  </div>
+</div>
+
+<!-- PAGE CONTENT -->
+<div class="page-wrap">
+
+  <!-- SEARCH -->
+  <div class="search-section">
+    <div class="section-eyebrow">Consulta de Historial por Numero VIN</div>
+    <div class="search-form">
+      <input class="search-input" type="text" value="1HGCV1F12JA004521" placeholder="INGRESE EL VIN DEL VEHICULO (17 CARACTERES)">
+      <button class="search-btn">Consultar Historial</button>
+    </div>
+    <div class="search-footer">
+      <div class="search-footer-item">Estado: <strong>Operativo</strong></div>
+      <div class="search-footer-item">Disponibles: <strong>6 de 10</strong></div>
+      <div class="search-footer-item">Ciclo: <strong>01 ABR 2026</strong></div>
+      <div class="search-footer-item">Sincronizacion: <strong>29 MAR 2026</strong></div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card ai">
+      <div class="stat-eyebrow">Reportes este mes</div>
+      <div class="stat-val">4</div>
+      <div class="stat-sub">6 reportes restantes</div>
+    </div>
+    <div class="stat-card ac">
+      <div class="stat-eyebrow">Alertas activas</div>
+      <div class="stat-val alert">1</div>
+      <div class="stat-sub">Gravamen bancario</div>
+    </div>
+    <div class="stat-card af">
+      <div class="stat-eyebrow">Talleres en red</div>
+      <div class="stat-val ok">18</div>
+      <div class="stat-sub">Red certificada RD</div>
+    </div>
+    <div class="stat-card ag">
+      <div class="stat-eyebrow">Score promedio flota</div>
+      <div class="stat-val warn">82</div>
+      <div class="stat-sub">Sobre 100 puntos</div>
+    </div>
+  </div>
+
+  <!-- DOCUMENT -->
+  <div class="document">
+    <div class="doc-header-top">
+      <div>
+        <div class="doc-id-label">Numero de Reporte</div>
+        <div class="doc-id-val">CRD-2026-9921 &nbsp;|&nbsp; 29 MAR 2026 14:32 &nbsp;|&nbsp; Verificado</div>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div class="doc-vehicle-name">Honda Accord LX 2018</div>
+        <div class="doc-vin">1HGCV1F12JA004521</div>
+        <div class="doc-badges">
+          <span class="badge badge-ok">Sin reporte de robo</span>
+          <span class="badge badge-warn">Gravamen activo</span>
+          <span class="badge badge-ok">Titulo limpio RD</span>
+          <span class="badge badge-warn">Salvamento origen</span>
+        </div>
+      </div>
+      <div class="doc-score-block">
+        <div class="doc-score-label">Indice de confianza</div>
+        <div class="doc-score-number">85</div>
+        <div class="doc-score-denom">/ 100 puntos</div>
+        <div class="score-track"><div class="score-fill"></div></div>
+        <div class="doc-score-verdict">Confiable</div>
+      </div>
+    </div>
+    <div class="doc-header-meta">
+      <div class="meta-cell"><strong>Placa</strong>A824512</div>
+      <div class="meta-cell"><strong>Kilometraje</strong>82,450 km</div>
+      <div class="meta-cell"><strong>Color</strong>Gris Plata</div>
+      <div class="meta-cell"><strong>Origen</strong>Estados Unidos</div>
+      <div class="meta-cell"><strong>Importado</strong>2020</div>
+    </div>
+
+    <!-- TABS -->
+    <div class="module-tabs">
+      <div class="module-tab active">Historial Mecanico</div>
+      <div class="module-tab">Seguros</div>
+      <div class="module-tab">Antifraude</div>
+      <div class="module-tab">Salud</div>
+      <div class="module-tab">Valor Mercado</div>
+      <div class="module-tab">Carga de Datos</div>
+      <div class="module-tab">Suscripcion</div>
+    </div>
+
+    <!-- MECANICA -->
+    <div class="module">
+      <div class="module-header">
+        <div class="module-title">Historial Mecanico — Red de Talleres Certificados</div>
+        <div class="module-subtitle">3 registros &nbsp;|&nbsp; Datos verificados por talleres autorizados</div>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr>
+            <th>Fecha</th><th>Taller autorizado</th><th>Tipo de servicio</th>
+            <th>Kilometraje</th><th>Motor</th><th>Transmision</th><th>Estado</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td class="td-mono">15/01/2026</td>
+              <td>Taller Los Especialistas</td>
+              <td>Mantenimiento 80k — Preventivo</td>
+              <td class="td-mono">82,450 km</td>
+              <td><span class="status st-ok"><span class="status-pip"></span>Optimo</span></td>
+              <td><span class="status st-ok"><span class="status-pip"></span>Optimo</span></td>
+              <td><span class="status st-ok"><span class="status-pip"></span>Excelente</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">10/06/2025</td>
+              <td>AutoCentro RD</td>
+              <td>Cambio de frenos — Correctivo</td>
+              <td class="td-mono">74,100 km</td>
+              <td><span class="status st-ok"><span class="status-pip"></span>Optimo</span></td>
+              <td><span class="status st-warn"><span class="status-pip"></span>Regular</span></td>
+              <td><span class="status st-warn"><span class="status-pip"></span>Regular</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">02/12/2024</td>
+              <td>Taller Los Especialistas</td>
+              <td>Cambio de aceite — Preventivo</td>
+              <td class="td-mono">68,900 km</td>
+              <td><span class="status st-ok"><span class="status-pip"></span>Optimo</span></td>
+              <td><span class="status st-ok"><span class="status-pip"></span>Optimo</span></td>
+              <td><span class="status st-ok"><span class="status-pip"></span>Excelente</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SEGUROS -->
+    <div class="module">
+      <div class="module-header">
+        <div class="module-title">Historial de Seguros — Reclamaciones Registradas</div>
+        <div class="module-subtitle">1 incidente &nbsp;|&nbsp; Datos provistos por aseguradoras certificadas</div>
+      </div>
+      <div class="incident-wrap">
+        <div class="incident-card">
+          <div class="incident-top">
+            <div class="incident-tag">Colision leve — Dano cosmetico, parte trasera derecha</div>
+            <div class="incident-num">No. SR-2024-00482 &nbsp;|&nbsp; 22/05/2024</div>
+          </div>
+          <div class="incident-body">
+            <div class="fields-grid">
+              <div class="field"><label>Aseguradora</label><div class="fval">Seguros Reservas S.A.</div></div>
+              <div class="field"><label>Tipo de perdida</label><div class="fval">Colision — Dano cosmetico</div></div>
+              <div class="field"><label>Monto de reparacion</label><div class="fval mono">RD$ 45,000.00</div></div>
+              <div class="field"><label>Estado estructural</label><div class="fval"><span class="status st-ok"><span class="status-pip"></span>Sin afectacion</span></div></div>
+              <div class="field"><label>Resultado</label><div class="fval">Reparacion confirmada por perito</div></div>
+              <div class="field"><label>Perito asignado</label><div class="fval">Lic. Carlos Medina, Siniestros</div></div>
+            </div>
+            <div class="photo-section">
+              <div class="photo-eyebrow">Evidencia Fotografica — Archivo Digital Seguros Reservas</div>
+              <div class="photo-grid">
+                <div class="photo-item"><div class="photo-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="10" rx="1" stroke="#8A8078" stroke-width="1"/><circle cx="8" cy="8" r="2.5" stroke="#8A8078" stroke-width="1"/><path d="M5 3l1-2h4l1 2" stroke="#8A8078" stroke-width="1" fill="none"/></svg></div><div class="photo-label">Vista lateral<br>derecha</div></div>
+                <div class="photo-item"><div class="photo-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="10" rx="1" stroke="#8A8078" stroke-width="1"/><circle cx="8" cy="8" r="2.5" stroke="#8A8078" stroke-width="1"/><path d="M5 3l1-2h4l1 2" stroke="#8A8078" stroke-width="1" fill="none"/></svg></div><div class="photo-label">Detalle<br>puerta trasera</div></div>
+                <div class="photo-item"><div class="photo-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="10" rx="1" stroke="#8A8078" stroke-width="1"/><circle cx="8" cy="8" r="2.5" stroke="#8A8078" stroke-width="1"/><path d="M5 3l1-2h4l1 2" stroke="#8A8078" stroke-width="1" fill="none"/></svg></div><div class="photo-label">Vista<br>posterior</div></div>
+                <div class="photo-item"><div class="photo-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="10" rx="1" stroke="#8A8078" stroke-width="1"/><circle cx="8" cy="8" r="2.5" stroke="#8A8078" stroke-width="1"/><path d="M5 3l1-2h4l1 2" stroke="#8A8078" stroke-width="1" fill="none"/></svg></div><div class="photo-label">Post-<br>reparacion</div></div>
+              </div>
+              <div class="photo-auth">Imagenes autenticadas digitalmente por Seguros Reservas S.A. — Depto. de Siniestros — Autenticadas 22/05/2024. Validez legal segun Ley No. 146-02.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANTIFRAUDE -->
+    <div class="module">
+      <div class="module-header">
+        <div class="module-title">Sistema Antifraude — Verificacion Escudo CertiAuto RD</div>
+        <div class="module-subtitle">Cruce con Policia Nacional, DIGESETT, Camara de Comercio y bases internacionales</div>
+      </div>
+      <ul class="alert-list">
+        <li class="alert-item">
+          <div class="alert-status-col"><div class="alert-icon ai-ok">OK</div></div>
+          <div class="alert-content-col">
+            <div class="alert-title at-ok">Sin reporte de robo activo</div>
+            <div class="alert-desc">Este VIN no registra denuncias activas en la Policia Nacional de la Republica Dominicana ni en bases de datos internacionales NICB e Interpol.</div>
+          </div>
+          <div class="alert-source-col"><div class="alert-source-txt">Policia Nacional RD<br>INTERPOL / NICB<br>DIGESETT</div></div>
+        </li>
+        <li class="alert-item">
+          <div class="alert-status-col"><div class="alert-icon ai-warn">!</div></div>
+          <div class="alert-content-col">
+            <div class="alert-title at-warn">Titulo de salvamento en pais de origen</div>
+            <div class="alert-desc">El vehiculo fue importado con clasificacion Salvage por inundacion menor. La reparacion fue verificada y certificada por aseguradora local antes de su registro en RD.</div>
+          </div>
+          <div class="alert-source-col"><div class="alert-source-txt">Copart USA<br>IAAI Database<br>DGII RD</div></div>
+        </li>
+        <li class="alert-item">
+          <div class="alert-status-col"><div class="alert-icon ai-ok">OK</div></div>
+          <div class="alert-content-col">
+            <div class="alert-title at-ok">Odometro coherente — Sin alteracion detectada</div>
+            <div class="alert-desc">El kilometraje reportado por los talleres sigue una progresion logica y consistente. No se detectan discrepancias que indiquen posible alteracion del odometro.</div>
+          </div>
+          <div class="alert-source-col"><div class="alert-source-txt">Red talleres<br>CertiAuto RD<br>Algoritmo km-check</div></div>
+        </li>
+        <li class="alert-item">
+          <div class="alert-status-col"><div class="alert-icon ai-crit">!</div></div>
+          <div class="alert-content-col">
+            <div class="alert-title at-crit">Gravamen bancario activo — Oposicion vigente</div>
+            <div class="alert-desc">Este vehiculo registra una oposicion vigente por financiamiento bancario activo. Verifique con la entidad financiera antes de concretar cualquier transaccion de compraventa.</div>
+          </div>
+          <div class="alert-source-col"><div class="alert-source-txt">Camara de<br>Comercio RD<br>Registro Mercantil</div></div>
+        </li>
+        <li class="alert-item">
+          <div class="alert-status-col"><div class="alert-icon ai-ok">OK</div></div>
+          <div class="alert-content-col">
+            <div class="alert-title at-ok">Integridad de chasis verificada</div>
+            <div class="alert-desc">El numero de chasis fisico coincide con el VIN registrado. Los reportes de taller no documentan soldaduras, cortes ni alteraciones estructurales en el bastidor.</div>
+          </div>
+          <div class="alert-source-col"><div class="alert-source-txt">Talleres<br>certificados<br>CertiAuto RD</div></div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- SALUD -->
+    <div class="module">
+      <div class="module-header">
+        <div class="module-title">Resumen de Salud Tecnica del Vehiculo</div>
+        <div class="module-subtitle">Actualizado al 15/01/2026 — Taller Los Especialistas</div>
+      </div>
+      <div class="health-grid">
+        <div class="health-cell"><div class="health-lbl">Motor</div><span class="status st-ok"><span class="status-pip"></span>Optimo</span></div>
+        <div class="health-cell"><div class="health-lbl">Transmision</div><span class="status st-ok"><span class="status-pip"></span>Funcional</span></div>
+        <div class="health-cell"><div class="health-lbl">Chasis</div><span class="status st-ok"><span class="status-pip"></span>Limpio</span></div>
+        <div class="health-cell"><div class="health-lbl">Sistema de frenos</div><span class="status st-warn"><span class="status-pip"></span>Regular</span></div>
+        <div class="health-cell"><div class="health-lbl">Sistema electrico</div><span class="status st-ok"><span class="status-pip"></span>Sin alertas</span></div>
+        <div class="health-cell"><div class="health-lbl">Situacion legal</div><span class="status st-crit"><span class="status-pip"></span>Gravamen activo</span></div>
+      </div>
+    </div>
+
+    <!-- MERCADO -->
+    <div class="module">
+      <div class="module-header">
+        <div class="module-title">Estimacion de Valor de Mercado — Republica Dominicana</div>
+        <div class="module-subtitle">Referencia estimada &nbsp;|&nbsp; Marzo 2026 &nbsp;|&nbsp; No constituye tasacion oficial</div>
+      </div>
+      <div class="market-grid">
+        <div class="market-cell"><div class="market-lbl">Valor estimado actual</div><div class="market-val">RD$ 1,450,000</div><div class="market-sub">Mercado dominicano, mar 2026</div></div>
+        <div class="market-cell"><div class="market-lbl">Rango de mercado</div><div class="market-val">1.3M — 1.6M</div><div class="market-sub">Segun condicion y equipamiento</div></div>
+        <div class="market-cell"><div class="market-lbl">Consumo promedio</div><div class="market-val">13.5 km/l</div><div class="market-sub">Ciclo mixto carretera / ciudad</div></div>
+        <div class="market-cell"><div class="market-lbl">Depreciacion anual</div><div class="market-val caution">8.2%</div><div class="market-sub">Promedio Honda Accord RD</div></div>
+        <div class="market-cell"><div class="market-lbl">Indice de reventa</div><div class="market-val positive">Alto</div><div class="market-sub">Demanda estable en el mercado</div></div>
+        <div class="market-cell"><div class="market-lbl">Ajuste por salvamento</div><div class="market-val caution">- 5 pts</div><div class="market-sub">Aplicado al score de confianza</div></div>
+      </div>
+    </div>
+
+    <!-- CARGA -->
+    <div class="module">
+      <div class="module-header">
+        <div class="module-title">Centro de Ingesta — Talleres y Aseguradoras</div>
+        <div class="module-subtitle">Formatos aceptados: TSV, JSON, XLSX &nbsp;|&nbsp; Validacion automatica en tiempo real</div>
+      </div>
+      <div class="upload-wrap">
+        <div class="upload-zone">
+          <div class="upload-title">Arrastre su archivo de datos aqui</div>
+          <div class="upload-sub">O haga clic para seleccionar desde su computadora</div>
+          <div class="format-row">
+            <span class="format-tag">TSV Tab-Delimited</span>
+            <span class="format-tag">JSON / API REST</span>
+            <span class="format-tag">XLSX / Excel</span>
+            <span class="format-tag">CSV</span>
+          </div>
+        </div>
+        <div style="font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-ghost);margin-bottom:10px;">Estructura requerida — Tab-Delimited (.tsv)</div>
+        <div class="code-sample">VIN &nbsp;&nbsp;&nbsp; FECHA &nbsp;&nbsp;&nbsp; TALLER_ID &nbsp;&nbsp;&nbsp; TIPO_SERVICIO &nbsp;&nbsp;&nbsp; KM &nbsp;&nbsp;&nbsp; ESTADO_MOTOR &nbsp;&nbsp;&nbsp; ESTADO_TRANS &nbsp;&nbsp;&nbsp; NOTA<br><span class="hl">1HGCV1... &nbsp;&nbsp; 2026-03-15 &nbsp;&nbsp; T001 &nbsp;&nbsp; Preventivo &nbsp;&nbsp; 82450 &nbsp;&nbsp; 1 &nbsp;&nbsp; 1 &nbsp;&nbsp; Mantenimiento 80k completado</span></div>
+        <div class="code-note">Codigos de estado: 1 = Excelente &nbsp;|&nbsp; 2 = Regular &nbsp;|&nbsp; 3 = Critico &nbsp;|&nbsp; El sistema recalculara el Score automaticamente tras la carga.</div>
+      </div>
+    </div>
+
+    <!-- SUSCRIPCION -->
+    <div class="module">
+      <div class="module-header">
+        <div class="module-title">Estado de Suscripcion</div>
+        <div class="module-subtitle">Plan Pro activo &nbsp;|&nbsp; Facturacion mensual automatica</div>
+      </div>
+      <div class="sub-grid">
+        <div class="sub-cell">
+          <div class="sub-plan-name">Plan Pro Mensual</div>
+          <div class="sub-price">RD$ 5,000 / mes &nbsp;|&nbsp; Reportes adicionales: RD$ 400 cada uno</div>
+          <div class="usage-track"><div class="usage-fill"></div></div>
+          <div class="usage-labels"><strong>6 reportes usados</strong><span>de 10 incluidos</span></div>
+        </div>
+        <div class="sub-cell">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-ghost);margin-bottom:14px;">Beneficios activos</div>
+          <ul class="benefit-list">
+            <li class="benefit-item"><span class="benefit-check">OK</span>Acceso completo al historial mecanico</li>
+            <li class="benefit-item"><span class="benefit-check">OK</span>Evidencia fotografica de aseguradoras</li>
+            <li class="benefit-item"><span class="benefit-check">OK</span>Alertas antifraude con detalle completo</li>
+            <li class="benefit-item"><span class="benefit-check">OK</span>Descarga de PDF con sello digital oficial</li>
+            <li class="benefit-item"><span class="benefit-check">OK</span>Soporte tecnico prioritario 24/7</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEAL -->
+    <div class="doc-seal">
+      <div class="seal-left">
+        Autenticado por <strong>CertiAuto RD — Sistema Oficial de Verificacion Vehicular</strong><br>
+        Validez del reporte: 24 horas desde la fecha de emision &nbsp;|&nbsp; ID de documento: CRD-2026-9921<br>
+        Conforme a la Ley No. 172-13 de Proteccion de Datos de Caracter Personal de la Republica Dominicana
+      </div>
+      <div class="seal-right">
+        <strong>Hash de autenticidad</strong><br>
+        SHA-256: 3f7a19d2c4b81e09f6a4d2c7...c84e<br>
+        Escanee el codigo QR para verificar la autenticidad de este reporte
+      </div>
+    </div>
+
+  </div><!-- /document -->
+</div><!-- /page-wrap -->
+
+<script>
+const hamBtn=document.getElementById('hamBtn');
+const mobileMenu=document.getElementById('mobileMenu');
+hamBtn.addEventListener('click',()=>mobileMenu.classList.toggle('open'));
+document.querySelectorAll('.nav-tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+  });
+});
+document.querySelectorAll('.mobile-nav-item').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.mobile-nav-item').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    mobileMenu.classList.remove('open');
+  });
+});
+document.querySelectorAll('.module-tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.module-tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
